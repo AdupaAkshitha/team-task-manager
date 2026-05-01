@@ -2,33 +2,43 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function App() {
+  const API = "https://team-task-manager-production-a6ec.up.railway.app";
+
   const [title, setTitle] = useState("");
   const [tasks, setTasks] = useState([]);
 
+  // GET TASKS
   const getTasks = async () => {
-    const res = await axios.get("http://localhost:5000/tasks");
+    const res = await axios.get(`${API}/tasks`);
     setTasks(res.data);
   };
 
+  // ADD TASK
   const addTask = async () => {
-    await axios.post("http://localhost:5000/task", {
+    if (!title) return;
+
+    await axios.post(`${API}/task`, {
       title,
       description: "task",
       userId: "demo"
     });
+
     setTitle("");
     getTasks();
   };
 
+  // UPDATE STATUS
   const updateStatus = async (id) => {
-    await axios.put(`http://localhost:5000/task/${id}`, {
+    await axios.put(`${API}/task/${id}`, {
       status: "done"
     });
+
     getTasks();
   };
 
+  // DELETE TASK
   const deleteTask = async (id) => {
-    await axios.delete(`http://localhost:5000/task/${id}`);
+    await axios.delete(`${API}/task/${id}`);
     getTasks();
   };
 
@@ -47,11 +57,11 @@ function App() {
         style={{ padding: 10, marginRight: 10 }}
       />
 
-      <button onClick={addTask}>Add</button>
-<h3>Total Tasks: {tasks.length}</h3>
-<h3>
-  Completed: {tasks.filter(t => t.status === "done").length}
-</h3>
+      <button onClick={addTask}>Add Task</button>
+
+      <h3>Total Tasks: {tasks.length}</h3>
+      <h3>Completed: {tasks.filter(t => t.status === "done").length}</h3>
+
       <h2>Tasks</h2>
 
       {tasks.map((t) => (
